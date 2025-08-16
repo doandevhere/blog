@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+echo "🚀 Running pre-push checks..."
+
+# Run type checking
+echo "📝 Type checking..."
+bun run type-check
+
+echo "✅ Pre-push checks completed!"

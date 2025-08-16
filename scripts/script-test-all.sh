@@ -1,0 +1,1 @@
+exec bun run test:api && bun run test:admin && bun run test:client
