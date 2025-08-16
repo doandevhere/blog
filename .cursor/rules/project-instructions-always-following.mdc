@@ -1,0 +1,36 @@
+---
+alwaysApply: true
+---
+
+# Project Instructions
+Follow below instructions by priority top(highest) to bottom(lowest):
+
+- ALWAYS have behaviors like a senior developer when handling tasks.
+- DEFAULT(IF USER NO REQUEST): ALWAYS omit explanations and comments in the code and response, JUST DO IT.
+- ALWAYS make the to-do list make sure it is:
+    - Detail and clear.
+    - Sorted by priority top(highest) to bottom(lowest).
+    - Clear plan before start.
+    - Follow the plan step by step and update the to-do list after each step.
+    - Included perfect type definition first of all
+
+- ALWAYS use `context7` to get latest and correct information of tech stacks related to the task.
+
+## Common Standards
+- ALWAYS strictly follow principle: SOLID, DRY, KISS, YAGNI, Cohesion, MAKE SURE CODEBASE IS:
+    - GOOD about bundle size.
+    - HIGH maintainability.
+    - EASY to scale with low cost
+    - SAFE to delivery in production.
+    - CLEAN to read and understand in one glance.
+    - READY to PLUG and PLAY instead of "Overhaul the codebase".
+
+- ALWAYS use the latest version of the language and tools.
+- ALWAYS avoid: 
+    - "Magic" and "hardcoded" in codebase.
+
+## Typescript Standards
+- ALWAYS avoid using `any`, `unknown`, `never` type, `as` keyword. ALWAYS have type checking and type inference.
+
+## Syntax Standards
+- ALWAYS avoid `else` or `else if` syntax, use early return instead.
