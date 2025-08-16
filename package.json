@@ -6,10 +6,45 @@
     "packages/*",
     "apps/*"
   ],
+  "scripts": {
+    "prepare": "husky",
+    "test:api": "cd apps/api && npm test",
+    "test:admin": "echo 'No tests configured for admin app'",
+    "test:client": "echo 'No tests configured for client app'",
+    "test": "bash scripts/script-test-all.sh",
+    "lint": "biome lint apps/",
+    "lint:fix": "biome lint --write apps/",
+    "format": "biome format apps/",
+    "format:fix": "biome format --write apps/",
+    "check": "biome check --write apps/",
+    "check:ci": "biome ci apps/",
+    "commit": "git-cz",
+    "type-check": "bun run type-check:admin && bun run type-check:api && bun run type-check:client",
+    "type-check:admin": "cd apps/admin && bun x tsc --noEmit",
+    "type-check:api": "cd apps/api && bun x tsc --noEmit",
+    "type-check:client": "cd apps/client && bun x tsc --noEmit"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@biomejs/biome": "^2.2.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@types/bun": "latest",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5"
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "apps/**/*.{js,ts,jsx,tsx,json,html,css,md}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
   }
 }

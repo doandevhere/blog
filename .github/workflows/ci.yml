@@ -1,0 +1,111 @@
+name: 🚀 CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BUN_VERSION: "1.2.19"
+
+jobs:
+  # 🔍 Code Quality
+  quality:
+    name: 🔍 Code Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🏗️ Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🔧 Biome CI
+        run: bunx @biomejs/biome ci apps/
+
+      - name: 📝 Type check
+        run: bun run type-check
+
+  # 🧪 Tests
+  test:
+    name: 🧪 Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [quality]
+
+    strategy:
+      matrix:
+        app: [admin, api, client]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🧪 Run tests - ${{ matrix.app }}
+        run: |
+          cd apps/${{ matrix.app }}
+          if [ -f "package.json" ] && grep -q '"test"' package.json; then
+            bun run test
+          else
+            echo "No tests found for ${{ matrix.app }}"
+          fi
+
+  # 🏗️ Build
+  build:
+    name: 🏗️ Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [quality]
+
+    strategy:
+      matrix:
+        app: [admin, api, client]
+
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: 🏗️ Build - ${{ matrix.app }}
+        run: |
+          cd apps/${{ matrix.app }}
+          bun run build
+
+      - name: 📤 Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.app }}
+          path: |
+            apps/${{ matrix.app }}/dist/
+            apps/${{ matrix.app }}/.next/
+            apps/${{ matrix.app }}/build/
+          retention-days: 7
